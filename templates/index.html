@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COV-CNN - COVID Detection from Chest X-Ray</title>
+
+    <link rel="icon" href="../static/header.png" type="image/x-icon" />
+    <!-- Bootstrap 4.5.2 for layout and responsive design -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-pzjw8f+ua7Kw1TIq0DdE0v36Ofo2Duy7e4sDk7F2dLh18vRx2gH4PfDqX9Ip9J4J" crossorigin="anonymous" />
+
+    <style>
+      /* General body and font settings */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* Header Section */
+      header {
+        background-color: #2e3a87;
+        color: white;
+        text-align: center;
+        padding: 30px 0;
+      }
+      
+      header h1 {
+        font-size: 60px;
+        margin: 0;
+      }
+      
+      header p {
+        font-size: 20px;
+        letter-spacing: 1px;
+        margin: 10px 0;
+      }
+      
+      /* Image Upload Section */
+      .upload-form {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: 30px;
+      }
+      
+      .upload-form label {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+      
+      .upload-form .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        padding: 10px;
+      }
+      
+      .upload-form .btn-primary {
+        background-color: #4caf50;
+        border: none;
+        font-size: 18px;
+        padding: 12px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      .upload-form .btn-primary:hover {
+        background-color: #45a049;
+      }
+      
+      /* Results Section */
+      .result-section {
+        margin-top: 20px;
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .result-section h3 {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 51px;
+        margin-top: -5px;
+      }
+      
+      .result-section img {
+        width: 100%;
+    height: 100%;
+        object-fit: cover; /* Ensures the image is cropped if necessary */
+        border-radius: 10px;
+      }
+        display: flex;
+        flex-wrap: wrap;
+       <style>
+      /* General body and font settings */
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f6f9;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Header Section */
+      header {
+        background-color: #2e3a87;
+        color: white;
+        text-align: center;
+        padding: 10px 0;
+      }
+
+      header h1 {
+        font-size: 60px;
+        margin: 0;
+      }
+
+      header p {
+        font-size: 20px;
+        letter-spacing: 1px;
+        margin: 10px 0;
+      }
+
+      /* Image Upload Section */
+      .upload-form {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+      }
+
+      .upload-form label {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 10px;
+      }
+
+      .upload-form .form-control {
+        background-color: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        padding: 10px;
+      }
+
+      .upload-form .btn-primary {
+        background-color: #4caf50;
+        border: none;
+        font-size: 18px;
+        padding: 12px 30px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .upload-form .btn-primary:hover {
+        background-color: #45a049;
+      }
+
+      /* Results Section */
+      .result-section {
+        margin-top: 40px;
+        background-color: white;
+        padding: 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .result-section h3 {
+        text-align: center;
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 51px;
+        margin-top: -5px;
+      }
+
+      .result-section img {
+        width: 100%;
+    height: 100%;
+        object-fit: cover; /* Ensures the image is cropped if necessary */
+        border-radius: 10px;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+
+      table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: collapse;
+      }
+
+      table th,
+      table td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+      }
+      
+      table th {
+        background-color: #f1f1f1;
+        font-weight: 600;
+      }
+      
+            
+      /* Responsive adjustments */
+@media (max-width: 1024px) {
+  /* Header text */
+  header h1 {
+    font-size: 50px;
+  }
+  header p {
+    font-size: 18px;
+  }
+
+  .upload-form {
+    padding: 30px;
+  }
+
+  .result-section img {
+    max-width: 90%;
+  }
+
+  /* Center the image and result section */
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .result-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Adjust table layout */
+  table {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Header text */
+  header h1 {
+    font-size: 45px;
+  }
+  header p {
+    font-size: 16px;
+  }
+
+  .upload-form {
+    padding: 25px;
+  }
+
+  .result-section img {
+    width: 450px;
+    height: 250px;
+  }
+
+  /* Center the image and result section */
+  .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .result-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+.col-md-4, .col-md-8 {
+         display: flex;
+        flex: 0 0 100%;
+        justify-content: center;
+        max-width: 100%;
+  }
+  table {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 587px) {
+  header h1 {
+    font-size: 35px;
+  }
+
+  .result-section h3 {
+    font-size: 24px;
+  }
+
+  .upload-form label {
+    font-size: 16px;
+  }
+
+  .upload-form .form-control {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+
+  .upload-form .btn-primary {
+  margin-top: 15px;
+    font-size: 16px;
+    padding: 10px 20px;
+  }
+
+  /* Center the image and table vertically */
+  .result-section img {
+    width: 80%;
+  }
+
+  .col-md-4, .col-md-8 {
+         display: flex;
+        flex: 0 0 100%;
+        justify-content: center;
+        max-width: 100%;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  /* Center the result section */
+  .result-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 150px) {
+  header h1 {
+    font-size: 20px;
+  }
+
+  .result-section h3 {
+    font-size: 18px;
+  }
+
+  .upload-form label {
+    font-size: 12px;
+  }
+
+  .upload-form .form-control {
+    font-size: 10px;
+  }
+
+  .upload-form .btn-primary {
+    font-size: 12px;
+    padding: 5px 15px;
+  }
+
+  /* Ensure the image and content scales */
+  .result-section img {
+    width: 450px;
+    height: 250px;
+  }
+
+  table {
+    font-size: 10px;
+  }
+
+  /* Center the result section */
+  .result-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <h1>COV-CNN</h1>
+      <p>CNN-Based Detection of COVID from Chest X-Ray</p>
+    </header>
+
+    <div class="container">
+      <!-- Image Upload Section -->
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+          <div class="upload-form">
+            <form method="post" id="imageForm" enctype="multipart/form-data">
+              {% csrf_token %}
+              <label for="ImgFile">Upload Chest X-Ray Image</label>
+              <input type="file" name="ImgFile" class="form-control" id="ImgFile" required />
+              <input type="submit" class="btn btn-primary mt-3" name="submit" value="Analyze Image" />
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="result-section mt-4">
+        <h3>Analysis Results for the Uploaded X-Ray Image</h3>
+
+        <div class="row">
+          <!-- Image on the left (col-md-4) -->
+          <div class="col-md-4">
+            <img src="{{ image }}" alt="Uploaded Chest X-Ray" />
+          </div>
+
+          <!-- Results Table on the right (col-md-8) -->
+          <div class="col-md-8">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col0">Metric</th>
+                  <th scope="col1">COVID Prediction</th>
+                  <th scope="col2">Confidence Score</th>
+                  <th scope="col3">Inference Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Prediction</th>
+                  <td>{{ v_pred }}</td>
+                  <td>{{ v_cf }}%</td>
+                  <td>{{ v_time }} sec</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional Bootstrap JS and Popper.js for Bootstrap components -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zyWG6AcfP4Dke3nRJkWvJX6hOaX+geGAy6gD3yP4" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0DdE0v36Ofo2Duy7e4sDk7F2dLh18vRx2gH4PfDqX9Ip9J4J" crossorigin="anonymous"></script>
+  </body>
+</html>
