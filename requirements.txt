@@ -1,0 +1,8 @@
+# requirements.txt
+django
+tensorflow
+opencv-python
+numpy
+seaborn
+matplotlib
+scikit-learn

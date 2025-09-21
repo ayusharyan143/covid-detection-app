@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>COV-CNN - COVID Detection from Chest X-Ray</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        body { font-family: 'Arial', sans-serif; background-color: #f4f6f9; }
+        header { background-color: #2e3a87; color: white; text-align: center; padding: 2rem 1rem; }
+        header h1 { font-size: 3rem; margin: 0; }
+        .upload-form { background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .result-section { margin-top: 2rem; background-color: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .result-section h3 { text-align: center; margin-bottom: 2rem; }
+        .result-img { max-width: 100%; border-radius: 10px; }
+    </style>
+</head>
+<body>
+    <header><h1>COV-CNN</h1><p>CNN-Based Detection of COVID from Chest X-Ray</p></header>
+    <div class="container mt-4">
+        <div class="row justify-content-center"><div class="col-lg-8 col-md-10"><div class="upload-form">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="modelChoice"><strong>1. Choose a Model for Analysis</strong></label>
+                    <select class="form-control" id="modelChoice" name="model_choice">
+                        <option value="custom_cnn">Custom CNN (95.05%)</option>
+                        <option value="vgg16" selected>VGG16 (95.19% - Highest)</option>
+                        <option value="xception">Xception (90.50%)</option>
+                        <option value="resnet50">ResNet50 (73.81%)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="ImgFile"><strong>2. Upload Chest X-Ray Image</strong></label>
+                    <input type="file" name="ImgFile" class="form-control-file" id="ImgFile" required />
+                </div>
+                <button type="submit" class="btn btn-success btn-block mt-4">Analyze Image</button>
+            </form>
+        </div></div></div>
+        {% if v_pred %}
+        <div class="result-section">
+            <h3>Analysis Results</h3>
+            <div class="row align-items-center">
+                <div class="col-md-5 text-center">
+                    <img src="{{ image_url }}" alt="Uploaded X-Ray" class="result-img" />
+                </div>
+                <div class="col-md-7">
+                    <table class="table table-bordered mt-3">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Metric</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>COVID Prediction</strong></td>
+                                <td>{{ v_pred }}</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Confidence Score</strong></td>
+                                <td>{{ v_cf }}%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Inference Time</strong></td>
+                                <td>{{ v_time }} seconds</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Model Used</strong></td>
+                                <td>{{ v_model_name }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
